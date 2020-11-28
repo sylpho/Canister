@@ -9,12 +9,18 @@ import (
 )
 
 func main() {
-	cli, err := client.NewEnvClient()
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		panic(err)
 	}
 
-	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	err = cli.ContainerStart(ctx, "lupino/ardb-server", types.ContainerStartOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
 	if err != nil {
 		panic(err)
 	}
