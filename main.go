@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
@@ -15,17 +14,11 @@ func main() {
 		panic(err)
 	}
 
-	err = cli.ContainerStart(ctx, "lupino/ardb-server", types.ContainerStartOptions{})
-	if err != nil {
-		panic(err)
-	}
+	// create and run container
+	resp, err := container_create_and_run(cli, ctx, "lupino/ardb-server")
 
-	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
-	if err != nil {
-		panic(err)
-	}
+	// wait for container to stop
+	// container_wait(cli, ctx, resp.ID)
 
-	for _, container := range containers {
-		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
-	}
+	fmt.Println(resp.ID)
 }
